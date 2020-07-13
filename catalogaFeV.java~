@@ -1,0 +1,48 @@
+import java.io.File;
+
+public class catalogaFeV {
+
+    private static class NotDirectoryException extends Exception {
+	NotDirectoryException(File arq) {
+	    super(arq.getName() + " não é um diretório");
+	}
+    }
+
+    public static void main(String args[]) {
+	String nomedDir;
+	File origem;
+	Catalogo catalogo;
+	File destino;
+
+	try {
+	    if (args != null && args.length == 2) {
+		origem = new File(args[0]);
+		destino = new File(args[1]);
+
+		if ( origem.isDirectory()) {
+		    System.out.println("Origem " + origem.getName());
+		    catalogo = new Catalogo(origem.toPath());
+		    catalogo.toString();
+		}
+		else {
+		    Exception e = new NotDirectoryException(origem);
+		    throw e;
+		}
+
+		if (destino.isDirectory()) {
+		    System.out.println("Destino " + destino.getName());
+		}
+		else {
+		    Exception e = new NotDirectoryException(destino);
+		    throw e;
+		}
+	    }
+	}
+	catch (Exception e) {
+	    System.out.println(e.getMessage());
+	    System.out.println("Programa de comparação e cópia de arquivos");
+	    System.out.println("Modo de uso: Arquivos <dir de origem> <dir de destino>");
+	}
+    }
+}
+

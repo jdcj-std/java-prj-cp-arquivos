@@ -1,0 +1,59 @@
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.nio.file.FileVisitResult;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedHashSet;
+import java.util.Set;
+
+
+public class Catalogo {
+    Path diretorio;
+    Set<Path> catalogo;
+    List<String> ext = new ArrayList<String>(Arrays.asList(".jpg", ".jpeg", ".mpeg",
+							   ".mp4", ".mkv", ".java"));
+
+    public Catalogo(Path diretorio) throws IOException {
+        this.diretorio = diretorio;
+
+	if (Files.isDirectory(diretorio)) {
+	    Files.walkFileTree(this.diretorio, new SimpleFileVisitor<Path> () {
+		    @Override
+		    public FileVisitResult visitFile(Path file,
+						     BasicFileAttributes attr) {
+			String nome = file.getFileName().toString().toLowerCase();
+			for(String fileExt : ext) {
+			    // Verfica se o nome do arq termina com extensao
+			    if (nome.endsWith(fileExt)) {
+				System.out.println("Catalogo - arquivo: " + file.toString());
+				// Instancia o objeto para lhe atribuir valor
+				if (Catalogo.this.catalogo == null) { 
+				    Catalogo.this.catalogo = new LinkedHashSet<Path>();
+				}
+				Catalogo.this.catalogo.add(file);
+			    } 
+			}
+			return FileVisitResult.CONTINUE;
+		    }
+		});
+	}
+    }
+
+    public String toString() {
+	StringBuffer retorno = new StringBuffer();
+
+	if (this.catalogo != null && this.catalogo.size() > 0) {
+	    for(Path arquivo : this.catalogo) {
+		retorno.append(arquivo.toString());
+		retorno.append("\n");
+	    }
+	}
+
+	return retorno.toString();
+    }
+}
